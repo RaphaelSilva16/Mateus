@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="dark">
+    <title>Fotos</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #262626; }
+      .foto { position: fixed; inset: 0; overflow: hidden; opacity: 0; transition: opacity 300ms ease-in-out; }
+      .foto.ativa { opacity: 1; }
+      .foto img { position: absolute; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+      @media (prefers-reduced-motion: reduce) { .foto { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="foto ativa"><img src="imagens/foto-1.jpeg" alt="" fetchpriority="high"></div>
+    <div class="foto"><img src="imagens/foto-2.jpeg" alt=""></div>
+    <div class="foto"><img src="imagens/foto-3.jpeg" alt=""></div>
+    <script>
+      const fotos = [...document.querySelectorAll('.foto')];
+      let atual = 0;
+      // Aguarda as fotos para evitar uma troca antes do carregamento.
+      Promise.all([...document.images].map(imagem => imagem.decode().catch(() => {})))
+        .then(() => {
+          setInterval(() => {
+            if (document.hidden) return;
+            fotos[atual].classList.remove('ativa');
+            atual = (atual + 1) % fotos.length;
+            fotos[atual].classList.add('ativa');
+          }, 2000);
+        });
+    </script>
+  </body>
+</html>
